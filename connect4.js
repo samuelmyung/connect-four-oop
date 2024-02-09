@@ -15,10 +15,9 @@ class Game {
 
     this.height = height;
     this.width = width;
-
     this.board = [];
     this.currPlayer = 1;
-
+    this.hasWonGame = false;
     this.start();
   }
 
@@ -126,14 +125,15 @@ class Game {
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
+    // Prevent any more clicks being made when the game has been won
+    if (this.hasWonGame) return;
+
     // get x from ID of clicked cell
     const x = Number(evt.target.id.slice("top-".length));
 
     // get next spot in column (if none, ignore click)
     const y = this.findSpotForCol(x);
-    if (y === null) {
-      return;
-    }
+    if (y === null) return;
 
     // place piece in board and add to HTML table
     this.board[y][x] = this.currPlayer;
@@ -141,6 +141,7 @@ class Game {
 
     // check for win
     if (this.checkForWin()) {
+      this.hasWonGame = true;
       return this.endGame(`Player ${this.currPlayer} won!`);
     }
 
@@ -162,4 +163,8 @@ class Game {
 
 }
 
-new Game();
+const startButton = document.getElementById("startGame");
+startButton.addEventListener("click", () => {
+  new Game();
+  startButton.innerHTML = "Restart Game";
+});
