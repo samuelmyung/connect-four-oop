@@ -11,12 +11,13 @@
 
 class Game {
 
-  constructor(height = 6, width = 7) {
-
+  constructor(player1, player2, height = 6, width = 7) {
+    this.player1 = player1;
+    this.player2 = player2;
     this.height = height;
     this.width = width;
     this.board = [];
-    this.currPlayer = 1;
+    this.currPlayer = player1;
     this.hasWonGame = false;
     this.start();
   }
@@ -40,7 +41,6 @@ class Game {
 
     const top = document.createElement("tr");
     top.setAttribute("id", "column-top");
-    console.log("HEREEEEE");
 
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement("td");
@@ -77,7 +77,9 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    console.log(this.players);
+    console.log(this.currPlayer);
+    piece.style.backgroundColor = (`${this.currPlayer.getColor()}`);
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
@@ -151,7 +153,7 @@ class Game {
     }
 
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.player1 ? this.player2 : this.player1;
   }
 
   /** Start game. */
@@ -163,8 +165,26 @@ class Game {
 
 }
 
-const startButton = document.getElementById("startGame");
+class Player {
+
+  constructor(color) {
+    this.color = color;
+  }
+
+  getColor() {
+    return this.color;
+  }
+
+}
+
+const startButton = document.getElementById("start-game");
+const player1Input = document.getElementById("p1-color");
+const player2Input = document.getElementById("p2-color");
+
 startButton.addEventListener("click", () => {
-  new Game();
+  let p1 = new Player(player1Input.value)
+  let p2 = new Player(player2Input.value)
+
+  new Game(p1, p2);
   startButton.innerHTML = "Restart Game";
 });
